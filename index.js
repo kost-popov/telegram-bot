@@ -5,19 +5,27 @@ let token = '1056462139:AAEU9J7G2a6G4Cf3u4MxFNQwKWjIQUYbZJw';
 let bot = new TelegramBot(token, {polling: true});
 
 let notes = [
-    { uid: 933278809, time: 'тогда-то', text: 'что-нибудь' },
-    { uid: 933278809, time: 'потом', text: 'важную вещь' },
-    { uid: 933278809, time: 'завтра', text: 'суббота' },
+  { uid: 933278809, time: 'тогда-то', text: 'что-нибудь' },
+  { uid: 933278809, time: 'потом', text: 'важную вещь' },
+  { uid: 933278809, time: 'завтра', text: 'суббота' },
 ];
 
 bot.onText(/напомни (.+) в (.+)/, (msg, match) =>  {
-  let userId = msg.from.id;
+  const chat_id = msg.from.id;
   let text = match[1];
   let time = match[2];
 
-  notes.push({ 'uid': userId, 'time': time, 'text': text });
+  notes.push({ 'uid': chat_id, 'time': time, 'text': text });
 
-  bot.sendMessage(userId, 'Отлично! Я обязательно напомню :)');
+  bot.sendMessage(chat_id, 'Отлично! Я обязательно напомню :)').then();
+});
+
+bot.onText(/напоминания/, (msg, match) =>  {
+  const chat_id = msg.from.id;
+  notes.forEach((note) => {
+    bot.sendMessage(chat_id, note.uid + ' ' + note.time + ' ' + note.text ).then();
+  });
+  console.log(notes);
 });
 
 bot.onText(/количество/, (msg, match) =>  {
@@ -26,33 +34,33 @@ bot.onText(/количество/, (msg, match) =>  {
     bot.sendMessage(userId, 'Сейчас у меня ' + notes.length + ' напоминаний');
 });
 
-bot.onText(/тест (.+) в (.+) в (.+)/, (msg, match) =>  {
+bot.onText(/тест/, (msg, match) =>  {
     let userId = msg.from.id;
     bot.sendMessage(userId, 'Отлично! Тест пройден');
     console.log(match)
 });
 
 bot.onText(/П|привет/, (msg, match) =>  {
-    let userId = msg.from.id;
-    bot.sendMessage(userId, 'Привет');
-    console.log(match)
+  let userId = msg.from.id;
+  bot.sendMessage(userId, 'Привет');
+  console.log(match)
 });
 
 bot.onText(/фото/, (msg, match) =>  {
-    let chat_id = msg.from.id;
-    const photo = fs.createReadStream('image.jpg');
-    // bot.sendPhoto(
-    //     chat_id,
-    //     photo
-    //     );
-    // bot.sendMessage(chat_id, 'Отлично! Тест пройден');
-    //console.log(match)
+  let chat_id = msg.from.id;
+  const photo = fs.createReadStream('image.jpg');
+  // bot.sendPhoto(
+  //     chat_id,
+  //     photo
+  //     );
+  // bot.sendMessage(chat_id, 'Отлично! Тест пройден');
+  //console.log(match)
 });
 
 bot.onText(/тест2/, (msg, match) =>  {
-    let userId = msg.from.id;
-    bot.sendMessage(userId, 'Отлично! Тест пройден');
-    console.log(match)
+  let userId = msg.from.id;
+  bot.sendMessage(userId, 'Отлично! Тест пройден');
+  console.log(match)
 });
 
 setInterval(() => {
